@@ -1,0 +1,44 @@
+{
+  "version": "20260927-v2",
+  "performanceLibraryPreparation": {
+    "coldSeconds": 250.0,
+    "observedSeconds": 247.53,
+    "sourceRun": "20260927-041241-408943",
+    "sourceDevice": "emulator-5584",
+    "measurement": "Completed fixture-perf-count-before to completed fixture-perf-count-after log timestamps; 0 to 100000 files"
+  },
+  "sourceRuns": [
+    "20260918-163405-591012",
+    "20260919-065151-844023",
+    "20260919-233303-410094",
+    "20260925-195733-923989"
+  ],
+  "categorySeconds": {
+    "SHORT": 3.2,
+    "NORMAL": 8.01,
+    "LONG": 23.14,
+    "VERY_LONG": 60.62
+  },
+  "profileFactors": {
+    "api37-1080x2400-440dpi-3button-en-US-hardware|x86_64|sdk_gphone16k_x86_64": 1.0,
+    "api28-1080x2400-440dpi-3button-en-US-swiftshader|x86_64|Android SDK built for x86_64": 1.192,
+    "api36-1080x2400-440dpi-3button-en-US-hardware|x86_64|sdk_gphone64_x86_64": 1.07,
+    "api35-1080x2400-440dpi-3button-en-US-swiftshader|x86_64|sdk_gphone64_x86_64": 1.181,
+    "api36-1080x2400-440dpi-3button-en-US-swiftshader|x86_64|sdk_gphone64_x86_64": 1.229,
+    "api37-1080x2400-440dpi-3button-en-US-hardware|x86_64|sdk_gphone64_x86_64": 1.012
+  },
+  "isolatedOverheadSeconds": 2.04,
+  "scenarioOverheadSeconds": {
+    "ABOUT-16": 20.09,
+    "ART-58": 3.14,
+    "BKP-59": 3.13,
+    "HIST-36": 4.57,
+    "HOME-10-ACCESS": 6.65,
+    "HOME-73-ACCESS": 4.55,
+    "PRIV-19": 4.91,
+    "PRIV-31": 5.03,
+    "RES-53": 4.99,
+    "RES-54": 4.93,
+    "SCAN-37": 5.97
+  }
+}

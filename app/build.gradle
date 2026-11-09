@@ -1,0 +1,250 @@
+/*
+            ~ MJ PDF
+    ~ Copyright (C) 2023 Mudlej
+    ~
+            ~ This program is free software: you can redistribute it and/or modify
+    ~ it under the terms of the GNU General Public License as published by
+    ~ the Free Software Foundation, either version 3 of the License, or
+    ~ (at your option) any later version.
+    ~ This program is distributed in the hope that it will be useful,
+            ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+    ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    ~ GNU General Public License for more details.
+    ~ You should have received a copy of the GNU General Public License
+    ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    ~
+
+    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                    ~ This code was previously licensed under
+    ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                    ~ MIT License
+    ~ Copyright (c) 2018 Gokul Swaminathan
+    ~ Copyright (c) 2023 Mudlej
+    ~
+            ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+    ~ of this software and associated documentation files (the "Software"), to deal
+    ~ in the Software without restriction, including without limitation the rights
+    ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    ~ copies of the Software, and to permit persons to whom the Software is
+    ~ furnished to do so, subject to the following conditions:
+    ~ The above copyright notice and this permission notice shall be included in all
+    ~ copies or substantial portions of the Software.
+    ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    ~ SOFTWARE.
+*/
+
+plugins {
+    id 'com.android.application'
+    id 'com.google.devtools.ksp' version '2.3.9'
+}
+
+android {
+    def fdroidAbi = project.findProperty("fdroidAbi")
+
+    defaultConfig {
+        applicationId "com.gitlab.mudlej.MjPdfReader"
+        minSdkVersion 23
+        compileSdkVersion 36
+        targetSdkVersion 36
+        versionCode 58
+        versionName "3.1.0"
+        multiDexEnabled = true
+        vectorDrawables.useSupportLibrary = true
+
+        testInstrumentationRunner "com.gitlab.mudlej.MjPdfReader.suite.MjPdfTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        def crashAppId = project.findProperty("AI") ?: ""
+        def crashApiKey = project.findProperty("AK") ?: ""
+        def crashApiUri = project.findProperty("AU") ?: ""
+        resValue "string", "CRASH_REPORT_APP_ID", "\"${crashAppId}\""
+        resValue "string", "CRASH_REPORT_API_KEY", "\"${crashApiKey}\""
+        resValue "string", "CRASH_REPORT_API_URI", "\"${crashApiUri}\""
+    }
+
+    buildFeatures {
+        aidl = true
+        buildConfig = true
+        resValues = true
+        viewBinding = true
+    }
+    sourceSets {
+        androidTest.assets.srcDirs = [
+            "$projectDir/src/androidTest/assets",
+            "$projectDir/schemas",
+            "$rootDir/testing/goldens",
+        ]
+    }
+    androidResources {
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!README.md:!reviews:!tools"
+    }
+
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
+    splits {
+        abi {
+            enable gradle.startParameter.taskNames.any {
+                it.toLowerCase(Locale.ROOT).endsWith('assemblerelease')
+            }
+            reset()
+            if (fdroidAbi != null) {
+                include fdroidAbi
+                universalApk false
+            } else {
+                include 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+                universalApk true
+            }
+        }
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled true
+            shrinkResources = true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        benchmark {
+            initWith release
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ['release']
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled = true // for LocalDateTime before api < 26
+
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    namespace = 'com.gitlab.mudlej.MjPdfReader'
+    testOptions {
+        unitTests.returnDefaultValues = true
+        execution = 'ANDROIDX_TEST_ORCHESTRATOR'
+        animationsDisabled = true
+    }
+    lint {
+        abortOnError = true
+        checkReleaseBuilds = true
+        fatal += 'NewApi'
+    }
+}
+
+def abiVersionOffsets = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.each { output ->
+            def abi = output.filters.find {
+                it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
+            }?.identifier
+            def offset = abiVersionOffsets[abi]
+            if (offset != null) {
+                output.versionCode.set(offset * 1000 + android.defaultConfig.versionCode)
+            }
+        }
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+dependencies {
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.4.0"
+    implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'androidx.documentfile:documentfile:1.1.0'
+    implementation 'androidx.work:work-runtime-ktx:2.10.1'
+
+    // Activity
+    api 'androidx.activity:activity-ktx:1.13.0'
+
+    // AndroidX Fragment library Kotlin
+    implementation "androidx.fragment:fragment-ktx:1.8.9"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.8'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.9.8'
+
+    // Room
+    implementation "androidx.room:room-runtime:2.8.4"
+    ksp "androidx.room:room-compiler:2.8.4"
+
+    implementation project(path: ':PdfiumAndroid')
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0'
+
+
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
+
+    // Material Design
+    implementation 'com.google.android.material:material:1.14.0'
+
+    // MJ PDF's fork of
+    implementation project(':AndroidPdfViewer:android-pdf-viewer')
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.14.0'
+
+    // kotlin coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0'
+
+
+    //  required fir desugar for LocalDateTime with old APIs
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+
+    // Area Crash Reporter
+    implementation('ch.acra:acra-dialog:5.13.1') {
+        exclude group: 'com.google.auto.service', module: 'auto-service'
+    }
+    implementation('ch.acra:acra-http:5.13.1') {
+        exclude group: 'com.google.auto.service', module: 'auto-service'
+    }
+
+    testImplementation 'junit:junit:4.13.2'
+
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:core-ktx:1.7.0'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test:rules:1.7.0'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.7.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
+    androidTestImplementation 'androidx.work:work-testing:2.10.1'
+    androidTestImplementation 'androidx.room:room-testing:2.8.4'
+    debugImplementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1'
+    debugImplementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
+    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1'
+    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1'
+    androidTestImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
+    androidTestImplementation 'com.squareup.okhttp3:okhttp-tls:4.12.0'
+
+    androidTestUtil 'androidx.test:orchestrator:1.6.1'
+}

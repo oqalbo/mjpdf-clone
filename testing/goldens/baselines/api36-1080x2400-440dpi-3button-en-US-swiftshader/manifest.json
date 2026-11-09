@@ -1,0 +1,462 @@
+{
+  "approvalBasis": "The maintainer approved the original 60 reviewed images, including the scanned-image captures, then VIS-56 and VIS-57 on 2026-09-17, then twelve edge-only changes on 2026-10-01.",
+  "approvalDate": "2026-10-01",
+  "approvalStatus": "approved",
+  "capture": {
+    "applicationApkSha256": "e249f1e8e26d47ad38221828cb4bf59b4830b0fd9c36d535a98dc20557372ea4",
+    "gitHead": "c28e21cf08a7f727cabcf470d0780ededc47f45e",
+    "imageAdditions": [
+      {
+        "applicationApkSha256": "a9d85dcb522844a209b86a2e1ea5dea8b5f9eb51aa3c42b6de01b22c597abc9e",
+        "gitHead": "baabd6e6f0a1b4dc93a24b3c88f85370b46af7d4",
+        "images": [
+          "VIS-56-scanned-night-mode.png"
+        ],
+        "runId": "20260917-224946-605523"
+      },
+      {
+        "applicationApkSha256": "a9d85dcb522844a209b86a2e1ea5dea8b5f9eb51aa3c42b6de01b22c597abc9e",
+        "gitHead": "baabd6e6f0a1b4dc93a24b3c88f85370b46af7d4",
+        "images": [
+          "VIS-57-reader-chrome-dark.png"
+        ],
+        "runId": "20260917-225535-600116"
+      }
+    ],
+    "runIds": [
+      "20260916-160106-965275",
+      "20260916-161224-427917",
+      "20260916-161343-264508",
+      "20260916-161711-793638"
+    ],
+    "imageUpdates": [
+      {
+        "approvalDate": "2026-10-01",
+        "approvalBasis": "Maintainer approved fixing preview leakage at page and tile bitmap edges.",
+        "change": "Disable rectangle-edge antialiasing for PDF page bitmap draws while retaining bitmap filtering and restoring overlay filters.",
+        "runIds": [
+          "20261001-004020-049547"
+        ],
+        "applicationApkSha256": "0611c987f887a79052b13475aba7f6967ac857a603c06f3b0e348c73b35928d3",
+        "instrumentationApkSha256": "b3cf848a0d8b39b9d83a01911d53fb0fe384c7e70b9e22eade53543e2f8aba72",
+        "gitHead": "9a7d7be9a4ca2bb9514ac7495e231993966323df",
+        "workingTreeChange": "PDFView.drawPageBitmap and preview-independent LayoutBaselineTest assertions",
+        "images": [
+          "VIS-13-fit-height.png",
+          "VIS-26-horizontal-ltr-page42.png",
+          "VIS-27-horizontal-rtl-page2.png",
+          "VIS-28-rtl-overridden-to-ltr.png",
+          "VIS-29-single-page-mode.png",
+          "VIS-30-dual-page.png",
+          "VIS-31-dual-page-first-alone.png",
+          "VIS-33-palette-all-six.png",
+          "VIS-35-highlight-multiline.png",
+          "VIS-36-highlight-night-mode.png",
+          "VIS-41-search-ligature.png",
+          "VIS-52-landscape-page41.png"
+        ]
+      }
+    ]
+  },
+  "count": 62,
+  "images": [
+    {
+      "filename": "VIS-01-tlcl-page41.png",
+      "height": 2400,
+      "sha256": "9e659dc840d7d1b9ae033b9158552a085e9133f19ff37eea18ff43c16be197bc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-02-tlcl-page61.png",
+      "height": 2400,
+      "sha256": "89bbbbda448046e61b582ede34313a6063c6d049ccdaf52631e2aaffa96bf2b1",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-03-arabic-page1.png",
+      "height": 2400,
+      "sha256": "0789222d0e160e1557b84c9ea89c3d2f322b8d66cd508382ba3d3411b851122c",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-04-arabic-page9.png",
+      "height": 2400,
+      "sha256": "7dd377af49b68892fb00b5aca9df9847524f5ce49a9c290274e7497b92af82e7",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-05-scanned-page1.png",
+      "height": 2400,
+      "sha256": "c496bc3dc9828d6d85cc238538f98d13fbc811e73e1a0d44ed3dd03ef8a2b5ab",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-06-scanned-page7.png",
+      "height": 2400,
+      "sha256": "3e0fc4cfc8ef80ca78c8a8c66696133ba88070ed08341179d3c8d9ff3065662b",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-07-forms-indicators.png",
+      "height": 2400,
+      "sha256": "f3a84a479990ba8a8ab545a56b76f13307ba9bac7cd8a9a00a8ec62f5730088d",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-08-links-page1.png",
+      "height": 2400,
+      "sha256": "2c10c43e139b51f22f91e908f8f5ab80a8a2e15bd5b035a5e812c96f544288e2",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-09-tlcl-cover.png",
+      "height": 2400,
+      "sha256": "6f03c24db66a4c2135c7e799a608073ce3cc929b13d42089dba6356b296807aa",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-10-tlcl-page250.png",
+      "height": 2400,
+      "sha256": "b9472c90d9123420ba3e7465c2797f04a4b23c8ba9b6fbc6d7d96243a3e43531",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-11-fit-width.png",
+      "height": 2400,
+      "sha256": "9e659dc840d7d1b9ae033b9158552a085e9133f19ff37eea18ff43c16be197bc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-12-fit-page.png",
+      "height": 2400,
+      "sha256": "9e659dc840d7d1b9ae033b9158552a085e9133f19ff37eea18ff43c16be197bc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-13-fit-height.png",
+      "height": 2400,
+      "sha256": "660d1d2e5a619123078e5f45d140e65828c442a84c097a962fc8ce3a857ec503",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-14-zoom-2.5.png",
+      "height": 2400,
+      "sha256": "edd20ea8ce502a7a7384cc849a77b3f6992ea5564a72085a940c5e7cd65054cf",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-15-zoom-3-panned.png",
+      "height": 2400,
+      "sha256": "81f8c04d70ad627822bd03683ceb2259fc87c4744ebeae7da01349c63e0a1f0f",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-16-double-tap-mid-zoom.png",
+      "height": 2400,
+      "sha256": "99160023dcc76610955575ca4f9affefb36ece2ce3963fcff0480ce1c497f3fa",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-17-night-mode.png",
+      "height": 2400,
+      "sha256": "0f30b6d38bb0094dcf73a0ea448246ba252c7f70d11ae27f4ba157633071e56b",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-18-pdf-theme-light.png",
+      "height": 2400,
+      "sha256": "9e659dc840d7d1b9ae033b9158552a085e9133f19ff37eea18ff43c16be197bc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-19-pdf-theme-system-dark.png",
+      "height": 2400,
+      "sha256": "0f30b6d38bb0094dcf73a0ea448246ba252c7f70d11ae27f4ba157633071e56b",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-20-pdf-theme-system-light.png",
+      "height": 2400,
+      "sha256": "9e659dc840d7d1b9ae033b9158552a085e9133f19ff37eea18ff43c16be197bc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-21-crop-margins-on.png",
+      "height": 2400,
+      "sha256": "334651926fda61fcf2c14f55922cdc73c757b2f5a6b57f6ec7a58fa130f0f05a",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-22-crop-margins-off.png",
+      "height": 2400,
+      "sha256": "a3b4a523b34af8148500d8f842d26e3b02812b2ecc7e622bba2a109200468813",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-23-crop-and-night.png",
+      "height": 2400,
+      "sha256": "db5e697ddcea9a0fdbe1e3cfd155bf80167f6d6b15331c34084820ca747fadb1",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-24-high-quality.png",
+      "height": 2400,
+      "sha256": "10cf0cb67c28f760ece29e5188f58875a7347bae7b195ba6bdbec517f15826b3",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-25-antialiasing-off.png",
+      "height": 2400,
+      "sha256": "9e659dc840d7d1b9ae033b9158552a085e9133f19ff37eea18ff43c16be197bc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-26-horizontal-ltr-page42.png",
+      "height": 2400,
+      "sha256": "4b1d99aa734bb57b695cdb5c8c3aab43e39fc123a936901eea93f9e1743a8c3d",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-27-horizontal-rtl-page2.png",
+      "height": 2400,
+      "sha256": "7e461eea99bcfac81a894e608093424966c644addebb646a170c8e0d7f5129be",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-28-rtl-overridden-to-ltr.png",
+      "height": 2400,
+      "sha256": "512969c94c14c1a34a2b5e24885e0c05a4314618f7cc3827ebe0e31f5b14b6ce",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-29-single-page-mode.png",
+      "height": 2400,
+      "sha256": "0b6985687cead41951d684830f5f347f0f12f2c340c56e6911365c0dfd3dc41a",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-30-dual-page.png",
+      "height": 2400,
+      "sha256": "1dfa62aa0c10607832908000bf30ea5a6f324b4aaf652a528e32f92133587f18",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-31-dual-page-first-alone.png",
+      "height": 2400,
+      "sha256": "facee0005d98b5ee71f85b14d8c6cd55ff5f7d459e31e2acc19846168da4f118",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-32-no-page-spacing.png",
+      "height": 2400,
+      "sha256": "720313266d6dfb5ef2c4c4d823e92b1fb200d8a5605584bef5a7b4cb93b06fd6",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-33-palette-all-six.png",
+      "height": 2400,
+      "sha256": "37c1903dcb8fe46f13072b8e6fe3c63027a320a60db4964371e6314dd3a6f8d2",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-34-highlight-created.png",
+      "height": 2400,
+      "sha256": "f40eb1c678d9fd041c43a063c06aa1aca04bbb630f036c9c1f56652fca5223ba",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-35-highlight-multiline.png",
+      "height": 2400,
+      "sha256": "29693d0a13bf33226e9c7893bb2d14c0bab1533cada7077ac3b6e6d08d414148",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-36-highlight-night-mode.png",
+      "height": 2400,
+      "sha256": "ede04e80b1b198d5718de8df003fdb0360b5b1917a76e0de057aa5ee86870d2d",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-37-signature-stamp.png",
+      "height": 2400,
+      "sha256": "60ff97de764862ccfa7e8ccefb816acac10bbd22a0c995fbfe56438e28ec65ab",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-38-form-values.png",
+      "height": 2400,
+      "sha256": "65582dbb1d6d5ef5479e34c881c25340074631d67994816c59655d114a62d5df",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-39-search-tlcl.png",
+      "height": 2076,
+      "sha256": "80c3179c9c018145b0a4d695b547a9976737eea64ac86f8c9e66276a61120f9e",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-41-search-ligature.png",
+      "height": 2076,
+      "sha256": "cac604ce86ab00b0810a0a6e048b9e91719eaf4aed8188d6574884e31826d837",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-43-quote-card-dark.png",
+      "height": 1080,
+      "sha256": "b60acf86c1be4acfe4d377e9c5d2800b9e37e1685deb5c93e96521790b347612",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-43-quote-card-lavender.png",
+      "height": 1080,
+      "sha256": "2f43907eaa4e36a5d69ccca02f05b31f2678ef3f652895cb7772ccdbc05dce72",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-43-quote-card-light.png",
+      "height": 1080,
+      "sha256": "beaa7a174754b80a9ad41bdb9ade564cb731c3f1b7db76025d59981a219135aa",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-43-quote-card-mint.png",
+      "height": 1080,
+      "sha256": "4f58a42f8fbd9035093781e7b24473d7998ab5d8b558a5287ff8d840efef066d",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-43-quote-card-rose.png",
+      "height": 1080,
+      "sha256": "8f2e63eaddf5eab1350ea9d6300e1fd608b8434f06422eb88ad461daf43a709b",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-43-quote-card-sepia.png",
+      "height": 1080,
+      "sha256": "8971bf837d6f825c5f65d1bb073b931a8330b8f7b06bc80eedb9c75a5f142241",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-44-quote-card-rtl.png",
+      "height": 1080,
+      "sha256": "d1b4fe984bcb6f7a45afc69f3f621f62855014ebff3d1dc8647dcde613e26c0b",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-45-quote-card-mixed-ltr.png",
+      "height": 1080,
+      "sha256": "7002d88a3abf164ff0adc1214b057f5c7837257caf2936479bc6339ee2618fd1",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-46-quote-card-max-length.png",
+      "height": 1080,
+      "sha256": "c0a532686b537e69dfc4b0a7904a2d5b9f688ffe84a320c72135285db68ce8f0",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-47-thumbnail-grid-light.png",
+      "height": 2268,
+      "sha256": "14b5c65da061ba02adad87ae9fd70d4c1b16e462b7ae11c9fd8f1244047d4ff3",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-48-thumbnail-grid-dark.png",
+      "height": 2268,
+      "sha256": "e17eabf9ab6e27506c7fd63e1f9236f88ab0fb5ef25a6d9634278eb2a1d5cdf1",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-49-text-mode-default.png",
+      "height": 2400,
+      "sha256": "7733fc76e1b91288479989bcb8e9c4b4dfe114263f35fc23bf0fe73561852fda",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-50-text-mode-black.png",
+      "height": 2400,
+      "sha256": "98b54c09b66281406cb00b9284cf0d032958164e5a8344680b80896bb499febc",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-50-text-mode-dark.png",
+      "height": 2400,
+      "sha256": "f43bb294b808a94d649849d40b2d5f29756d03fbaaf6da8495bbc14ab1890e15",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-50-text-mode-dracula.png",
+      "height": 2400,
+      "sha256": "2a4f5f4e4893493b612c70583c06559f879299ce2945e80152fd918c2a0b2f59",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-50-text-mode-light.png",
+      "height": 2400,
+      "sha256": "17819a5ef17b46714b59b5686d4ea6f7b9dc88d29e0b6865fcb30f3a8013d839",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-50-text-mode-sepia.png",
+      "height": 2400,
+      "sha256": "b161bafc6a86699e211c5a6a76dbaabc8c94def7054ce1c90386094ae79a29ce",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-50-text-mode-system.png",
+      "height": 2400,
+      "sha256": "7733fc76e1b91288479989bcb8e9c4b4dfe114263f35fc23bf0fe73561852fda",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-51-text-mode-max-typography.png",
+      "height": 2400,
+      "sha256": "781b4644cecd05458571ad9b7f633dee666b5924e77cdbef0b1e6799a0a24f3e",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-52-landscape-page41.png",
+      "height": 1080,
+      "sha256": "45986b2d680c9a54759976462c0833da83a554991b9386dc2c575308066ec07b",
+      "width": 2400
+    },
+    {
+      "filename": "VIS-56-scanned-night-mode.png",
+      "height": 2400,
+      "sha256": "ff062fba1de37305c77921a5e73e04a04302184652354975981b340c97be5a20",
+      "width": 1080
+    },
+    {
+      "filename": "VIS-57-reader-chrome-dark.png",
+      "height": 2268,
+      "sha256": "4256ed6b5f80d20882c72e743af705b5e9e731c4dd2b8d48e6c5bb94cf32d973",
+      "width": 1080
+    }
+  ],
+  "pins": {
+    "animations": "off",
+    "apiLevel": 36,
+    "displayCutout": "none",
+    "displayDensityDpi": 440,
+    "displaySize": "1080x2400",
+    "fontScale": 1.0,
+    "gpu": "Google SwiftShader",
+    "locale": "en-US",
+    "navigationMode": "three-button",
+    "orientation": "portrait except the declared landscape baseline",
+    "systemNightMode": "off",
+    "timeZone": "UTC"
+  },
+  "profile": "api36-1080x2400-440dpi-3button-en-US-swiftshader",
+  "schema": "mjpdf-rendering-golden-profile",
+  "schemaVersion": 1,
+  "source": {
+    "document": "TLCL-25.12A.pdf",
+    "license": "CC BY-NC-ND 3.0 US",
+    "pageCount": 597,
+    "sha256": "c6c564db237ea1d5f5758c5a0df5d8c804041ef483585259687d04d9ecf2cd05",
+    "sizeBytes": 6519800,
+    "title": "The Linux Command Line, 7th Internet Edition",
+    "url": "https://sourceforge.net/projects/linuxcommand/files/TLCL/25.12/TLCL-25.12A.pdf/download"
+  }
+}

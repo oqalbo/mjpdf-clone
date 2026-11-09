@@ -1,0 +1,13 @@
+describe Real storage revocation makes an unpersisted MediaStore history row access unknown
+
+phase com.gitlab.mudlej.MjPdfReader.suite.home.Home73AccessPhaseTest#phaseOneCreateShellOwnedMediaHistory
+
+device-shell if [ "$(getprop ro.build.version.sdk)" -lt 30 ]; then pm revoke com.gitlab.mudlej.MjPdfReader android.permission.READ_EXTERNAL_STORAGE; pm revoke com.gitlab.mudlej.MjPdfReader android.permission.WRITE_EXTERNAL_STORAGE; else appops set --uid com.gitlab.mudlej.MjPdfReader MANAGE_EXTERNAL_STORAGE deny; fi
+phase com.gitlab.mudlej.MjPdfReader.suite.home.Home73AccessPhaseTest#phaseTwoRealRevocationMakesMediaHistoryUnknown
+
+device-shell if [ "$(getprop ro.build.version.sdk)" -lt 30 ]; then pm grant com.gitlab.mudlej.MjPdfReader android.permission.READ_EXTERNAL_STORAGE; pm grant com.gitlab.mudlej.MjPdfReader android.permission.WRITE_EXTERNAL_STORAGE; else appops set --uid com.gitlab.mudlej.MjPdfReader MANAGE_EXTERNAL_STORAGE allow; fi
+phase com.gitlab.mudlej.MjPdfReader.suite.home.Home73AccessPhaseTest#phaseThreeRealGrantRestoresMediaHistory
+
+cleanup-device-shell rm -rf /storage/emulated/0/Documents/mjpdf-home73-access
+cleanup-device-shell content delete --uri content://media/external/file --where "_data='/storage/emulated/0/Documents/mjpdf-home73-access' OR _data LIKE '/storage/emulated/0/Documents/mjpdf-home73-access/%'"
+cleanup-device-shell if [ "$(getprop ro.build.version.sdk)" -lt 30 ]; then pm grant com.gitlab.mudlej.MjPdfReader android.permission.READ_EXTERNAL_STORAGE; pm grant com.gitlab.mudlej.MjPdfReader android.permission.WRITE_EXTERNAL_STORAGE; else appops set --uid com.gitlab.mudlej.MjPdfReader MANAGE_EXTERNAL_STORAGE allow; fi

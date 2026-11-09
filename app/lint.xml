@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <issue id="ImpliedQuantity">
+        <ignore path="src/main/res/values-fa/strings.xml" />
+        <ignore path="src/main/res/values-fr/strings.xml" />
+        <ignore path="src/main/res/values-hi/strings.xml" />
+        <ignore path="src/main/res/values-pt-rBR/strings.xml" />
+    </issue>
+</lint>

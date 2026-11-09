@@ -1,0 +1,13 @@
+# Extended regular expressions matched against every line of a shared storage
+# snapshot, both the filesystem walk and the MediaStore query. A matching line
+# is dropped before the diff, so it can never be reported as a leftover.
+#
+# Only paths the platform churns on its own belong here. A path an app writes
+# does not, however noisy it is: the leftover gate exists to make exactly that
+# visible.
+/\.thumbnails/
+/\.database_uuid$
+/\.nomedia$
+/Android/
+/\.trashed-
+/lost\+found/

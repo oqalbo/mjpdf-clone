@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurfaceContainerHigh"
+    android:clipChildren="false"
+    tools:context="com.gitlab.mudlej.MjPdfReader.ui.reader.MainActivity">
+
+    <!-- Second Bar Layout -->
+    <HorizontalScrollView
+        android:id="@+id/secondBarScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/secondBarLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+
+    <!-- PDFView Layout -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secondBarScrollView">
+
+        <com.github.barteksc.pdfviewer.PDFView
+            android:id="@+id/pdfView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- Main Activity Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginTop="-6dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cropDetectionStatusCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/cropDetectionStatusText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    tools:text="Analyzing margins… 12/120" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cropDetectionCancelButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                    android:text="@string/cancel"
+                    android:textColor="?attr/colorOnSurface" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/cropDetectionProgress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="false" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/textSelectionActionCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secondBarScrollView"
+        app:layout_constraintVertical_bias="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/textSelectionActionContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionCopyButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/copy"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                app:icon="@drawable/ic_copy"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionShareButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/share"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                app:icon="@drawable/ic_share"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionSearchWebButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/search_web"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                app:icon="@drawable/ic_web"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionNoteButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/add_note"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                app:icon="@drawable/ic_comment_add"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionTranslateButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/translate"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                app:icon="@drawable/ic_translate"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionDeleteHighlightButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/delete"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                android:visibility="gone"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorError" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/textSelectionDiscardButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="?attr/colorSurfaceContainerHigh"
+                android:contentDescription="@string/discard"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:padding="8dp"
+                android:text=""
+                android:visibility="gone"
+                app:icon="@drawable/close_icon"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/colorOnSurface" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/textSelectionSwatchFlow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:flow_horizontalAlign="center"
+                app:flow_horizontalGap="12dp"
+                app:flow_horizontalStyle="packed"
+                app:flow_verticalGap="12dp"
+                app:flow_wrapMode="chain"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/textSelectionActionFlow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:constraint_referenced_ids="textSelectionCopyButton,textSelectionShareButton,textSelectionSearchWebButton,textSelectionNoteButton,textSelectionTranslateButton,textSelectionDeleteHighlightButton,textSelectionDiscardButton"
+                app:flow_horizontalAlign="center"
+                app:flow_horizontalGap="12dp"
+                app:flow_horizontalStyle="packed"
+                app:flow_verticalGap="12dp"
+                app:flow_wrapMode="chain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textSelectionSwatchFlow" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/discardAnnotationsFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="@string/discard_highlights"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorErrorContainer"
+        app:layout_constraintBottom_toTopOf="@id/saveAnnotationsFab"
+        app:layout_constraintEnd_toEndOf="@id/saveAnnotationsFab"
+        app:srcCompat="@drawable/close_icon"
+        app:tint="?attr/colorOnErrorContainer" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/saveAnnotationsFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="@string/save_highlights"
+        android:visibility="gone"
+        app:backgroundTint="?attr/colorPrimaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_save"
+        app:tint="?attr/colorOnPrimaryContainer" />
+
+    <View
+        android:id="@+id/appBarBottomShadow"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@drawable/app_bar_bottom_shadow"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Pick File Button -->
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.Material3.Button.Icon"
+        android:id="@+id/pickFileButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/pick_file"
+        android:textSize="32sp"
+        android:textColor="?attr/colorOnSurface"
+        android:backgroundTint="?attr/colorSurfaceContainerHigh"
+        app:backgroundTint="?attr/colorSurfaceContainerHigh"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- FS Buttons Layout   -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewActionsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false">
+
+        <!-- Full Screen Buttons Layout -->
+        <ScrollView
+            android:id="@+id/fullScreenButtonsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fs_panel_margin"
+            android:layout_marginTop="@dimen/fs_panel_margin_top"
+            android:layout_marginBottom="@dimen/fs_panel_margin"
+            android:background="@drawable/fullscreen_panel_background"
+            android:visibility="gone"
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/fs_panel_fading_edge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/fullScreenBottomControlsLayout"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/fullScreenButtonsList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/fs_panel_padding"
+                android:paddingStart="@dimen/fs_panel_padding"
+                android:paddingEnd="@dimen/fs_panel_padding"
+                android:clickable="false"
+                android:focusable="false">
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/exitFullScreenButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/exit_fullscreen_button"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/exit"
+                    app:icon="@drawable/close_icon"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/rotateScreenButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/rotate_screen"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/rotate"
+                    app:icon="@drawable/ic_screen_rotate"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/brightnessButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/brightness"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/brightness"
+                    android:checkable="true"
+                    app:toggleCheckedStateOnClick="false"
+                    app:icon="@drawable/ic_brightness"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/autoScrollButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/auto_scroll"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/auto_scroll"
+                    android:checkable="true"
+                    app:toggleCheckedStateOnClick="false"
+                    app:icon="@drawable/ic_auto_scroll"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/toggleHorizontalSwipeButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/horizontal_lock"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/horizontal_lock"
+                    android:checkable="true"
+                    app:toggleCheckedStateOnClick="false"
+                    app:icon="@drawable/ic_horizontal_swipe"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/toggleZoomLockButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/zoom_lock"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/zoom_lock"
+                    android:checkable="true"
+                    app:toggleCheckedStateOnClick="false"
+                    app:icon="@drawable/ic_zoom_out"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/screenshotButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/screenshot"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/screenshot"
+                    app:icon="@drawable/ic_screenshot"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/FullScreenOverlayButton"
+                    android:id="@+id/toggleLabelButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/hide_labels"
+                    android:padding="@dimen/fs_button_padding"
+                    android:paddingEnd="@dimen/fs_button_padding_end"
+                    android:layout_marginVertical="@dimen/fs_button_vertical_margin"
+                    android:text="@string/hide_labels"
+                    app:icon="@drawable/ic_double_arrow_left"
+                    app:iconGravity="start"
+                    app:iconSize="@dimen/fs_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/fullScreenBottomControlsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <!-- Auto Scroll Speed Text -->
+            <TextView
+                android:id="@+id/autoScrollSpeedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/seekbar_background"
+                android:fontFamily="monospace"
+                android:minEms="2"
+                android:padding="4dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:text="122" />
+
+            <!-- Auto Scroll Layout -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/autoScrollLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reverseScrollDirectionButton"
+                    style="@style/CustomMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription=""
+                    android:insetLeft="20dp"
+                    android:insetRight="20dp"
+                    android:padding="@dimen/as_button_padding"
+                    app:icon="@drawable/ic_reverse_direction"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/as_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/toggleAutoScrollButton"
+                    style="@style/CustomMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription=""
+                    android:insetLeft="20dp"
+                    android:insetRight="20dp"
+                    android:padding="@dimen/as_button_padding"
+                    app:icon="@drawable/ic_play_arrow"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/as_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/decScrollSpeedButton"
+                    style="@style/CustomMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription=""
+                    android:insetLeft="20dp"
+                    android:insetRight="20dp"
+                    android:padding="@dimen/as_button_padding"
+                    app:icon="@drawable/ic_decrease"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/as_button_size"
+                    tools:ignore="RtlSymmetry" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/incScrollSpeedButton"
+                    style="@style/CustomMaterialButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription=""
+                    android:insetLeft="20dp"
+                    android:insetRight="20dp"
+                    android:padding="@dimen/as_button_padding"
+                    app:icon="@drawable/ic_increase"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconSize="@dimen/as_button_size"
+                    tools:ignore="RtlSymmetry" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- Brightness Layout -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/brightnessLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatSeekBar
+                    android:id="@+id/brightnessSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/seekbar_background"
+                    android:minWidth="200dp"
+                    android:padding="4dp"
+                    android:progressTint="?attr/colorOnSurface"
+                    android:thumbTint="?attr/colorOnSurface" />
+
+                <TextView
+                    android:id="@+id/brightnessPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/seekbar_background"
+                    android:padding="5dp"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="35%" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <!-- Fullscreen Info Card-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/fullScreenInfoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:background="@drawable/seekbar_background"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/fullScreenInfoTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="14:32" />
+
+                <TextView
+                    android:id="@+id/fullScreenInfoTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxWidth="@dimen/fullscreen_info_max_width"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="Clean Architecture" />
+
+                <TextView
+                    android:id="@+id/fullScreenInfoPage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
+                    tools:text="Page 42 / 318 · 13%" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

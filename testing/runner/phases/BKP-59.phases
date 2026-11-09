@@ -1,0 +1,20 @@
+# BKP-59: Import leaves auto backup cancelled until a real process startup
+# reschedules it.
+#
+# The import's own restart must be suppressed in phase one because it calls
+# exit(0) in the instrumentation process, which cannot report a successful test
+# result afterward. The host-driven boundary then starts a second instrumentation
+# process. Creating that process runs the production App.onCreate before phase
+# two can inspect WorkManager; the test never calls AutoBackupScheduler itself.
+describe Imported auto backup is rescheduled by a real process startup
+
+# Imports autoBackupEnabled=true with no backup folder, verifies the pipeline's
+# terminal cancellation left no live work, and commits the preference to disk.
+phase com.gitlab.mudlej.MjPdfReader.suite.backup.AutoBackupProcessRestartTest#phaseOneImportAutoBackupOnAndLeaveTheScheduleCancelled
+
+kill-app
+
+# Starting this instrumentation phase creates the application and executes the
+# real App.onCreate. The phase asserts that startup enqueued the worker, then
+# proves the no-folder run records a visible failure.
+phase com.gitlab.mudlej.MjPdfReader.suite.backup.AutoBackupProcessRestartTest#phaseTwoAssertProcessStartupRescheduledTheImportedPreference

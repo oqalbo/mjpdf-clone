@@ -1,0 +1,45 @@
+<!-- Written by Mudlej. License is GPLv3. -->
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/actionbarIncognitoIcon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/incognito"
+        android:src="@drawable/ic_incognito"
+        app:tint="?attr/colorOnSurface"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/actionbarPageNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:layout_marginEnd="6dp"
+        android:textSize="18sp"
+        android:textColor="?attr/colorOnSurface"
+        android:text="@string/page_number"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/actionbarTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:textSize="18sp"
+        android:textColor="?attr/colorOnSurface"
+        android:text="@string/mj_app_name"
+        android:textDirection="firstStrong"
+        android:textAlignment="textStart"
+        android:maxLines="2"
+        android:ellipsize="end" />
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,0 +1,23 @@
+# HIST-36: Navigation history survives process death, without the saved view
+# state.
+#
+# launch-task, not launch-view. The trail is per session and is never written to
+# storage, which HIST-37 pins by asserting a fresh VIEW intent starts empty. It
+# comes back here only because resuming the task restores the activity from its
+# saved instance state. Using launch-view would assert the opposite of what the
+# app does and fail for the wrong reason.
+describe Navigation history survives process death, without the saved view state
+
+# Builds the trail: Go To Page 9, zoom above 1.0, Go To Page 17, then
+# backgrounds the app.
+phase com.gitlab.mudlej.MjPdfReader.suite.history.History36ProcessDeathTest#phaseOneBuildTrailAndBackground
+
+kill-app
+# Phase-two instrumentation must start before the task is brought forward;
+# otherwise Orchestrator force-stops the restored activity during startup.
+launch-task-after-start
+
+# Asserts three history rows with their origin labels, and that tapping Page 9
+# lands on index 8 and keeps the restored current zoom, because restored entries
+# carry no view state.
+phase com.gitlab.mudlej.MjPdfReader.suite.history.History36ProcessDeathTest#phaseTwoAssertTrailRestored

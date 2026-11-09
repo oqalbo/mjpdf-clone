@@ -1,0 +1,20 @@
+# PRIV-19: An incognito session survives process death and stays incognito.
+#
+# launch-task, not launch-view. A fresh VIEW intent would carry the incognito
+# extra itself and prove nothing about restoration. Resuming the task rebuilds
+# MainActivity from its saved instance state, which is where vm.incognito comes
+# back from, and that is the property under test.
+describe Incognito survives process death and records nothing after restore
+
+# Opens normal.pdf with the incognito extra, reads to page index 2, confirms the
+# PdfRecord table stays empty, then backgrounds the app.
+phase com.gitlab.mudlej.MjPdfReader.suite.privacy.Priv19ProcessDeathTest#phaseOneReadIncognitoAndBackground
+
+kill-app
+# Relaunch only after phase-two instrumentation has started, so its startup
+# force-stop cannot erase the restored incognito activity.
+launch-task-after-start
+
+# Asserts the restored reader still shows the incognito indicator, and that
+# reading on writes neither a PdfRecord row nor an annotation journal.
+phase com.gitlab.mudlej.MjPdfReader.suite.privacy.Priv19ProcessDeathTest#phaseTwoAssertRestoredSessionIsStillIncognito

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical"
+    android:paddingHorizontal="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAllFiles"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            app:checkedIconVisible="false"
+            app:chipMinHeight="36dp"
+            android:text="@string/home_chip_all_files" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipToRead"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            app:checkedIconVisible="false"
+            app:chipMinHeight="36dp"
+            android:text="@string/home_chip_to_read" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipReading"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            app:checkedIconVisible="false"
+            app:chipMinHeight="36dp"
+            android:text="@string/home_chip_reading" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipOnHold"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            app:checkedIconVisible="false"
+            app:chipMinHeight="36dp"
+            android:text="@string/home_chip_on_hold" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipCompleted"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            app:checkedIconVisible="false"
+            app:chipMinHeight="36dp"
+            android:text="@string/home_chip_completed" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAbandoned"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="3dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            app:checkedIconVisible="false"
+            app:chipMinHeight="36dp"
+            android:text="@string/home_chip_abandoned" />
+    </LinearLayout>
+</LinearLayout>

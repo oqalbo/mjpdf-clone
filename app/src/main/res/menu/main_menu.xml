@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/toolbarSecondaryActionOption"
+        android:orderInCategory="1"
+        android:title="@string/reload_pdf"
+        android:icon="@drawable/ic_refresh"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+
+    <item
+        android:id="@+id/toolbarPrimaryActionOption"
+        android:orderInCategory="2"
+        android:title="@string/full_screen"
+        android:icon="@drawable/ic_fullscreen_grey"
+        app:showAsAction="always"
+        android:visible="false"
+        />
+
+    <item
+        android:id="@+id/readerActionsOption"
+        android:orderInCategory="3"
+        android:title="@string/actions"
+        android:icon="@drawable/ic_burger_menu"
+        app:showAsAction="always" />
+
+</menu>

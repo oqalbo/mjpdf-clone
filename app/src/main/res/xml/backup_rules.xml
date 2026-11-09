@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="database" path="app-db.db" />
+    <include domain="database" path="app-db.db-wal" />
+    <include domain="file" path="annotations" />
+    <include domain="file" path="signature" />
+</full-backup-content>

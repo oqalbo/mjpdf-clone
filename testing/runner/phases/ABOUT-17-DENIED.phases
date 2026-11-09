@@ -1,0 +1,6 @@
+// Written by Mudlej. License is GPLv3.
+describe Onboarding leaves denied storage permissions denied without requesting access
+device-shell if [ "$(getprop ro.build.version.sdk)" -ge 30 ]; then appops set --uid com.gitlab.mudlej.MjPdfReader MANAGE_EXTERNAL_STORAGE deny; fi
+device-shell if [ "$(getprop ro.build.version.sdk)" -le 32 ]; then pm revoke com.gitlab.mudlej.MjPdfReader android.permission.READ_EXTERNAL_STORAGE; fi
+phase com.gitlab.mudlej.MjPdfReader.suite.about.IntroPermissionsTest#theIntroRequestsNoRuntimePermissions
+cleanup-device-shell if [ "$(getprop ro.build.version.sdk)" -ge 30 ]; then appops set --uid com.gitlab.mudlej.MjPdfReader MANAGE_EXTERNAL_STORAGE allow; fi

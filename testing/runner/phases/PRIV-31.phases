@@ -1,0 +1,20 @@
+# PRIV-31: A highlight made in incognito does not survive process death.
+#
+# launch-task, not launch-view. The point is that the task resumes into the same
+# incognito session and finds nothing to replay, because the recovery journal was
+# never written. A fresh VIEW intent would prove nothing about replay.
+describe An incognito highlight is lost with the process and is not replayed
+
+# Opens normal.pdf with the incognito extra, makes one highlight on page 1,
+# confirms the highlight exists and no journal was written, then backgrounds the
+# app.
+phase com.gitlab.mudlej.MjPdfReader.suite.privacy.Priv31ProcessDeathTest#phaseOneHighlightInIncognitoAndBackground
+
+kill-app
+# Relaunch only after phase-two instrumentation has started, so its startup
+# force-stop cannot erase the restored incognito activity.
+launch-task-after-start
+
+# Asserts page 1 comes back clean, the unsaved indicator is gone, and the session
+# is still incognito with nothing recorded.
+phase com.gitlab.mudlej.MjPdfReader.suite.privacy.Priv31ProcessDeathTest#phaseTwoAssertNothingIsReplayed

@@ -1,0 +1,20 @@
+# RES-53: Genuine process kill restores the reader from disk state.
+#
+# The page must come back from the PdfRecord row through
+# DocumentLoader.findPageNumber, so phase two must not be handed the page
+# number. It reads it from the app's own storage, which survives because
+# clearPackageData is off after phase one.
+describe Genuine process kill restores the reader from disk state
+
+# Opens normal.pdf, scrolls to page index 15, waits for the record column to
+# agree, then presses Home so the app is in the background.
+phase com.gitlab.mudlej.MjPdfReader.suite.resilience.ProcessKillRestoreTest#phaseOneReadToTargetPage
+
+kill-app
+# Avoid both a resolver race and phase-two instrumentation force-stopping the
+# reader by issuing the explicit PDF launch after the phase reports started.
+launch-view-after-start file:///sdcard/Download/normal.pdf
+
+# Asserts page index 15 restored from disk, and that SearchSessionCache has nothing,
+# which is what proves the process really was replaced.
+phase com.gitlab.mudlej.MjPdfReader.suite.resilience.ProcessKillRestoreTest#phaseTwoAssertRestoredFromDisk

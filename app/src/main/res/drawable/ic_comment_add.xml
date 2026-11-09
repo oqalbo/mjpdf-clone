@@ -1,0 +1,10 @@
+<!-- Written by Mudlej. License is GPLv3. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="?colorOnBackground"
+        android:pathData="M22,4c0,-1.1 -0.9,-2 -2,-2L4,2C2.9,2 2.01,2.9 2.01,4L2,22l4,-4h14c1.1,0 2,-0.9 2,-2L22,4zM17,11h-4v4h-2v-4L7,11L7,9h4L11,5h2v4h4v2z" />
+</vector>

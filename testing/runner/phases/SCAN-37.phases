@@ -1,0 +1,24 @@
+# SCAN-37: A scan interrupted by process death resumes and completes.
+#
+# launch-task, not launch-view. The scan is driven by HomeActivity, so the
+# scenario resumes the existing task from the launcher rather than opening a
+# document. There is no saved instance state to restore here: the assertion is
+# about what LibraryScanner persisted to ScannedPdfCache before it died, and
+# about the fresh pipeline finishing the work on the next launch.
+#
+# The kill is host driven because instrumentation shares the app process, so a
+# test cannot force-stop the app without taking itself with it. Every count in
+# both phases is scoped to the huge fixture's path prefix, per the scan scope
+# rule, because ScannedPdfCache legitimately holds rows outside any test scope.
+describe A scan interrupted by process death resumes and completes
+
+# Seeds the scan scope, starts the 500 file first scan, and asserts the partial
+# rows written so far all point at files that exist.
+phase com.gitlab.mudlej.MjPdfReader.suite.scan.Scan37ProcessDeathTest#phaseOneCommitsOneResultAndLeavesDurablePendingWork
+
+kill-app
+launch-task
+
+# Asserts the resumed pipeline reaches all 500 rows with no duplicate paths and
+# an identity on every row.
+phase com.gitlab.mudlej.MjPdfReader.suite.scan.Scan37ProcessDeathTest#phaseTwoReconstructsOnlyPendingWorkAndCompletesTheScan

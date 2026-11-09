@@ -1,0 +1,26 @@
+# ART-58: A cold start clears the whole print staging directory.
+#
+# App.onCreate calls PrintController.sweepStaging exactly once per process, and
+# instrumentation shares the app process, so the sweep a test wants to observe
+# has already run before its first line. The only honest way to see it run again
+# is a host driven kill between two instrumentation invocations, which is what
+# the artifacts spec anticipated when it flagged this test as possibly needing
+# the phase runner.
+#
+# No launch-view and no launch-task. Nothing needs to be on screen: starting the
+# instrumentation for phase two is itself what creates the application object
+# and runs its onCreate, and that is the whole subject of the test.
+#
+# clearPackageData is off after phase one, so the cache directory phase one
+# wrote survives the kill. That is the channel under test.
+describe A cold start clears the whole print staging directory
+
+# Writes three files into cacheDir/print, one of them a whole copy of
+# small-300kb.pdf, and one quote card into cacheDir/share.
+phase com.gitlab.mudlej.MjPdfReader.suite.artifacts.PrintStagingColdStartTest#phaseOneStageThreeFilesForPrintAndOneForSharing
+
+kill-app
+
+# Asserts cacheDir/print is empty and cacheDir/share is untouched, since the
+# share cache has its own age based policy and no cold start rule.
+phase com.gitlab.mudlej.MjPdfReader.suite.artifacts.PrintStagingColdStartTest#phaseTwoAssertTheColdStartClearedPrintStagingAndLeftTheShareCache

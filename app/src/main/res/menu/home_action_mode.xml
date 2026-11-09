@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/statusBatchOption"
+        android:icon="@drawable/ic_book_bookmark"
+        android:title="@string/home_set_status"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/removeRecentBatchOption"
+        android:icon="@drawable/ic_remove_recent"
+        android:title="@string/home_remove_from_recent"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/hideBatchOption"
+        android:icon="@drawable/ic_hide"
+        android:title="@string/home_hide_from_library"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/deleteBatchOption"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:showAsAction="always" />
+</menu>

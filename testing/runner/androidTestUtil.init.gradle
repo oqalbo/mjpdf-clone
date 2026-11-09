@@ -1,0 +1,21 @@
+// Prints the resolved androidTestUtil APKs so the runner can install the test
+// orchestrator and its shell executor with adb.
+//
+// This lives in an init script rather than in app/build.gradle so the runner
+// adds no task to the project itself, and so the orchestrator versions stay
+// where they belong, in the androidTestUtil dependencies.
+
+gradle.rootProject { root ->
+    root.allprojects { project ->
+        project.tasks.register("printAndroidTestUtilApks") {
+            doLast {
+                def config = project.configurations.findByName("androidTestUtil")
+                if (config == null) {
+                    throw new GradleException(
+                        "no androidTestUtil configuration on ${project.path}")
+                }
+                config.resolve().each { file -> println "APK ${file.absolutePath}" }
+            }
+        }
+    }
+}

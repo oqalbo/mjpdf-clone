@@ -1,0 +1,13 @@
+<!-- Written by Mudlej. License is GPLv3. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="?colorOnBackground"
+        android:pathData="M14,2H6c-1.1,0 -2,0.9 -2,2v16c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2V8l-6,-6zM13,9V3.5L18.5,9H13zM8,12h8v2H8v-2zM8,16h5v2H8v-2zM8,8h3v2H8V8z" />
+    <path
+        android:fillColor="?colorOnBackground"
+        android:pathData="M15.8,18.2c-0.7,0 -1.3,-0.3 -1.8,-0.8 -1,-1 -1,-2.6 0,-3.5l1.4,-1.4 1.1,1.1 -1.4,1.4c-0.4,0.4 -0.4,1 0,1.4s1,0.4 1.4,0l1.4,-1.4 1.1,1.1 -1.4,1.4c-0.5,0.5 -1.1,0.7 -1.8,0.7zM18.6,15.4l-1.1,-1.1 1.4,-1.4c0.4,-0.4 0.4,-1 0,-1.4s-1,-0.4 -1.4,0l-1.4,1.4 -1.1,-1.1 1.4,-1.4c1,-1 2.6,-1 3.5,0 1,1 1,2.6 0,3.5l-1.3,1.5zM16.1,15l-1.1,-1.1 2.5,-2.5 1.1,1.1 -2.5,2.5z" />
+</vector>

@@ -1,0 +1,23 @@
+# RES-54: Genuine process kill during an annotation save does not corrupt the
+# source file.
+#
+# The app is still in the foreground when it is killed, mid save, so am kill
+# alone would not touch it. kill-app escalates and proves the pid is gone.
+# The pre-save SHA-256 cannot come from the app's storage, because the point is
+# to compare the file against what it was before, so phase one writes it to the
+# phase state directory and phase two reads it back.
+describe Genuine process kill during an annotation save does not corrupt the source file
+
+# Creates ten highlights on the large fixture, records the source SHA-256 into
+# the phase state directory, starts the save, and ends as soon as the progress
+# bar appears, leaving the app in the foreground.
+phase com.gitlab.mudlej.MjPdfReader.suite.resilience.SaveProcessKillTest#phaseOneStartSaveAndLeaveItRunning
+
+kill-app
+# The source is relaunched only after phase-two instrumentation has started, so
+# Orchestrator cannot force-stop it between launch and the integrity assertion.
+launch-view-after-start file:///sdcard/Download/large.pdf
+
+# Asserts the source opens, its digest either matches the recorded one or the
+# highlights are all present, and that no .part or .partial file is beside it.
+phase com.gitlab.mudlej.MjPdfReader.suite.resilience.SaveProcessKillTest#phaseTwoAssertSourceIntact

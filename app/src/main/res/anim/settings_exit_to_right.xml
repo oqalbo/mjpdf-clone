@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="140">
+    <translate
+        android:fromXDelta="0"
+        android:toXDelta="8%p" />
+    <alpha
+        android:fromAlpha="1"
+        android:toAlpha="0" />
+</set>

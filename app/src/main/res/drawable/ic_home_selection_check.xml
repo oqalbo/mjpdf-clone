@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="?attr/colorOnPrimary"
+        android:pathData="M12,1 a11,11 0 1,0 0,22 a11,11 0 1,0 0,-22 Z" />
+
+    <path
+        android:fillColor="?attr/colorPrimary"
+        android:pathData="M12,2.4 a9.6,9.6 0 1,0 0,19.2 a9.6,9.6 0 1,0 0,-19.2 Z" />
+
+    <path
+        android:strokeColor="?attr/colorOnPrimary"
+        android:strokeWidth="2.2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M7.2,12.4 L10.4,15.6 L16.8,9.2" />
+</vector>

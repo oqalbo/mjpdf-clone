@@ -1,0 +1,49 @@
+# ABOUT-16: A backgrounded intro survives process death on the page it was left
+# on.
+#
+# The host restores and drives the existing task before phase two. Android Test
+# Orchestrator force-stops the target before each instrumentation invocation, so
+# the process-death restoration itself must be asserted outside instrumentation.
+#
+# The kill is host driven because instrumentation shares the app process. It is
+# also the only way to reach this state: pressing Home puts the intro in the
+# background, and only the system, or the runner standing in for it, can take
+# the process away underneath it.
+#
+# Phase one clears package data and verifies the clean-install preferences. The
+# host then creates and backgrounds the task after instrumentation has exited,
+# because MonitoringInstrumentation finishes every activity at test completion.
+describe A backgrounded intro survives process death on the page it was left on
+
+# Verifies clean-install state without launching an activity. The host then
+# launches onboarding, advances to page four, and backgrounds the task.
+phase com.gitlab.mudlej.MjPdfReader.suite.about.About16ProcessDeathTest#phaseOneAssertCleanInstallOnboardingState
+
+launch-task
+assert-ui-text Welcome to MJ PDF
+click-ui-text Next
+assert-ui-text All your PDFs in one place
+click-ui-text Next
+assert-ui-text Made for long reading
+click-ui-text Next
+assert-ui-text Do more than read
+record-app-task
+device-shell input keyevent HOME
+await-app-background
+kill-app
+
+restore-app-task
+assert-ui-text Do more than read
+click-ui-text Next
+assert-ui-text Make it yours
+click-ui-text Get started
+
+# Depending on when Android recreates the Home activity under the restored
+# intro, completion leaves either Home or its first-run release notes in front.
+# Both are valid post-onboarding destinations; neither is part of the
+# process-restoration contract.
+assert-ui-any-text What's New || Library
+
+# Phase two verifies the durable marker written only after the host observed the
+# restored page, finished the intro, and reached a post-onboarding screen.
+phase com.gitlab.mudlej.MjPdfReader.suite.about.About16ProcessDeathTest#phaseTwoAssertTheIntroCameBackOnTheSamePage

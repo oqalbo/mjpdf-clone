@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/search_in_search_activity"
+        android:orderInCategory="1"
+        android:title="@string/search"
+        android:icon="@drawable/search_icon"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/locate_current_entry"
+        android:orderInCategory="2"
+        android:title="@string/locate_me"
+        android:icon="@drawable/ic_locate_me"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/expand_all_entries"
+        android:orderInCategory="3"
+        android:title="@string/expand_all"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/collapse_all_entries"
+        android:orderInCategory="4"
+        android:title="@string/collapse_all"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+</menu>

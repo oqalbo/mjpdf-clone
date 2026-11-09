@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Written by Mudlej. License is GPLv3. -->
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:contentDescription="@null"
+    android:paddingStart="12dp"
+    android:paddingEnd="16dp"
+    android:src="@drawable/ic_small_arrow_right"
+    android:tint="?attr/colorOnSurface"
+    tools:ignore="UseAppTint" />

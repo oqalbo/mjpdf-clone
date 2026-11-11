@@ -45,6 +45,7 @@ public class DragPinchManagerTest {
 
         ViewConfiguration configuration = mock(ViewConfiguration.class);
         when(configuration.getScaledTouchSlop()).thenReturn(8);
+        when(configuration.getScaledDoubleTapSlop()).thenReturn(100);
         try (MockedConstruction<GestureDetector> ignoredGestureDetector =
                      mockConstruction(GestureDetector.class);
              MockedConstruction<ScaleGestureDetector> ignoredScaleGestureDetector =
@@ -53,6 +54,7 @@ public class DragPinchManagerTest {
              MockedStatic<ViewConfiguration> mockedViewConfiguration =
                      mockStatic(ViewConfiguration.class)) {
             mockedViewConfiguration.when(() -> ViewConfiguration.get(context)).thenReturn(configuration);
+            mockedViewConfiguration.when(ViewConfiguration::getDoubleTapTimeout).thenReturn(300);
             manager = new DragPinchManager(pdfView, mock(AnimationManager.class));
         }
         manager.enable();
@@ -260,6 +262,64 @@ public class DragPinchManagerTest {
         manager.onTouch(pdfView, move);
 
         verify(pdfView, never()).moveRelativeTo(anyFloat(), anyFloat());
+    }
+
+    @Test
+    public void doubleTapHoldDoesNotStartTextSelectionWhenQuickScaleEnabled() {
+        when(pdfView.isQuickScaleEnabled()).thenReturn(true);
+        MotionEvent down = eventAt(MotionEvent.ACTION_DOWN, 40f, 40f);
+
+        manager.onDoubleTap(down);
+        manager.onLongPress(down);
+
+        verify(pdfView, never()).startTextSelectionAt(anyFloat(), anyFloat());
+    }
+
+    @Test
+    public void longPressStillStartsTextSelectionWithoutDoubleTap() {
+        when(pdfView.isQuickScaleEnabled()).thenReturn(true);
+        MotionEvent down = eventAt(MotionEvent.ACTION_DOWN, 40f, 40f);
+
+        manager.onLongPress(down);
+
+        verify(pdfView).startTextSelectionAt(40f, 40f);
+    }
+
+    @Test
+    public void textSelectionResumesAfterDoubleTapGestureEnds() {
+        when(pdfView.isQuickScaleEnabled()).thenReturn(true);
+        MotionEvent down = eventAt(MotionEvent.ACTION_DOWN, 40f, 40f);
+
+        manager.onDoubleTap(down);
+        manager.onDoubleTapEvent(eventAt(MotionEvent.ACTION_UP, 40f, 40f));
+        manager.onLongPress(down);
+
+        verify(pdfView).startTextSelectionAt(40f, 40f);
+    }
+
+    @Test
+    public void scalingSuppressesTextSelection() {
+        when(pdfView.isQuickScaleEnabled()).thenReturn(true);
+
+        manager.onScaleBegin(mock(ScaleGestureDetector.class));
+        manager.onLongPress(eventAt(MotionEvent.ACTION_DOWN, 40f, 40f));
+
+        verify(pdfView, never()).startTextSelectionAt(anyFloat(), anyFloat());
+    }
+
+    @Test
+    public void heldSecondTapDoesNotStartTextSelectionBeforeDoubleTapCallback() {
+        when(pdfView.isQuickScaleEnabled()).thenReturn(true);
+        MotionEvent firstUp = eventAt(MotionEvent.ACTION_UP, 40f, 40f);
+        when(firstUp.getEventTime()).thenReturn(1000L);
+        manager.onSingleTapUp(firstUp);
+
+        MotionEvent secondDown = eventAt(MotionEvent.ACTION_DOWN, 40f, 40f);
+        when(secondDown.getEventTime()).thenReturn(1100L);
+        manager.onTouch(pdfView, secondDown);
+        manager.onLongPress(secondDown);
+
+        verify(pdfView, never()).startTextSelectionAt(anyFloat(), anyFloat());
     }
 
     private MotionEvent eventAt(int action, float x, float y) {

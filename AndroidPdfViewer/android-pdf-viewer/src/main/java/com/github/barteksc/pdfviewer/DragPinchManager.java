@@ -61,7 +61,14 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
     private MotionEvent longPressDownEvent;
     private float longPressX;
     private float longPressY;
+    private boolean doubleTapInProgress;
+    private boolean hasLastTapUp;
+    private long lastTapUpTime;
+    private float lastTapUpX;
+    private float lastTapUpY;
     private final int touchSlop;
+    private final int doubleTapTimeout;
+    private final int doubleTapSlop;
 
     DragPinchManager(PDFView pdfView, AnimationManager animationManager) {
         this.pdfView = pdfView;
@@ -69,7 +76,10 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
         gestureDetector = new GestureDetector(pdfView.getContext(), this);
         scaleGestureDetector = new ScaleGestureDetector(pdfView.getContext(), this);
         scaleGestureDetector.setQuickScaleEnabled(pdfView.isQuickScaleEnabled());
-        touchSlop = ViewConfiguration.get(pdfView.getContext()).getScaledTouchSlop();
+        ViewConfiguration configuration = ViewConfiguration.get(pdfView.getContext());
+        touchSlop = configuration.getScaledTouchSlop();
+        doubleTapTimeout = ViewConfiguration.getDoubleTapTimeout();
+        doubleTapSlop = configuration.getScaledDoubleTapSlop();
         pdfView.setOnTouchListener(this);
     }
 
@@ -80,6 +90,8 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
     void disable() {
         enabled = false;
         scaling = false;
+        doubleTapInProgress = false;
+        hasLastTapUp = false;
         if (consumedTapState == ConsumedTapState.AWAITING_CONFIRMATION) {
             consumedTapState = ConsumedTapState.DISCARDED;
         }
@@ -175,6 +187,10 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
     @Override
     public boolean onDoubleTap(MotionEvent e) {
         clearConsumedTapUp(e.getDownTime());
+        if (pdfView.isQuickScaleEnabled()) {
+            doubleTapInProgress = true;
+            hasLastTapUp = false;
+        }
         if (!pdfView.isDoubleTapEnabled() || pdfView.isZoomDisabled()) {
             return false;
         }
@@ -197,6 +213,10 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
 
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
+        int action = e.getActionMasked();
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+            doubleTapInProgress = false;
+        }
         return false;
     }
 
@@ -216,6 +236,10 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+        hasLastTapUp = true;
+        lastTapUpTime = e.getEventTime();
+        lastTapUpX = e.getX();
+        lastTapUpY = e.getY();
         boolean consumed = pdfView.callbacks.callOnTapUp(e);
         if (consumed) {
             consumedTapState = ConsumedTapState.AWAITING_CONFIRMATION;
@@ -287,6 +311,10 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
 
     @Override
     public void onLongPress(MotionEvent e) {
+        if (pdfView.isQuickScaleEnabled() && (doubleTapInProgress || scaling)) {
+            longPressTriggered = false;
+            return;
+        }
         longPressTriggered = true;
         longPressStartedSelection = pdfView.startTextSelectionAt(e.getX(), e.getY());
         if (longPressStartedSelection) {
@@ -431,6 +459,12 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
             longPressDownEvent = event;
             longPressX = event.getX();
             longPressY = event.getY();
+            if (pdfView.isQuickScaleEnabled() && hasLastTapUp
+                    && event.getEventTime() - lastTapUpTime <= doubleTapTimeout
+                    && isNearLastTap(event.getX(), event.getY())) {
+                doubleTapInProgress = true;
+                hasLastTapUp = false;
+            }
             scaleGestureDetector.setQuickScaleEnabled(pdfView.isQuickScaleEnabled());
             animationManager.stopFling();
         }
@@ -467,6 +501,7 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
             }
         }
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+            doubleTapInProgress = false;
             if (scrolling) {
                 scrolling = false;
                 onScrollEnd(event);
@@ -482,6 +517,12 @@ class DragPinchManager implements GestureDetector.OnGestureListener, GestureDete
                 || action == MotionEvent.ACTION_UP
                 || action == MotionEvent.ACTION_POINTER_UP
                 || action == MotionEvent.ACTION_CANCEL;
+    }
+
+    private boolean isNearLastTap(float x, float y) {
+        float dx = x - lastTapUpX;
+        float dy = y - lastTapUpY;
+        return dx * dx + dy * dy <= doubleTapSlop * doubleTapSlop;
     }
 
     private void hideHandle() {

@@ -399,6 +399,7 @@ class DocumentLoader(
             .pageFling(layout.pageFling)
             .freeScrollMode(layout.freeScroll)
             .enableTextSelection(pref.getInlineTextSelection())
+            .crossPageTextSelection(pref.getCrossPageTextSelection())
             .textSelectionColor(MaterialColors.getColor(binding.root, R.attr.colorPrimary))
             .cropMargins(vm.cropMarginsEnabled)
             .cachedCropMargins(cachedCropMargins)

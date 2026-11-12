@@ -392,6 +392,8 @@
     <string name="double_tap_to_exit_summary">Require pressing Back twice to leave the reader. This applies when a PDF was opened from another app, or when the Home Page is disabled and Back returns to the file picker.</string>
     <string name="three_step_double_tap_zoom">Three-Step Double Tap Zoom</string>
     <string name="three_step_double_tap_zoom_summary">A second double tap keeps zooming to the maximum level before returning to the page.</string>
+    <string name="cross_page_text_selection_title">Select Text Across Pages</string>
+    <string name="cross_page_text_selection_summary">Drag a selection handle onto the next or previous page to include its text. Copy joins the selected pages with a line break.</string>
     <string name="drag_after_long_press_title">Drag After Holding</string>
     <string name="drag_after_long_press_summary">Hold a finger on the page, then drag to move it instead of the page staying stuck. Holding on text still starts text selection.</string>
     <string name="disable_double_tap_zoom_title">Disable Double Tap Zoom</string>

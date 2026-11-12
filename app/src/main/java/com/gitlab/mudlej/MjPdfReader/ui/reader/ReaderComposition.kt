@@ -681,6 +681,7 @@ class ReaderComposition(
         binding.pdfView.enableDoubleTap(!pref.getDoubleTapZoomDisabled())
         binding.pdfView.setQuickScaleEnabled(!pref.getDoubleTapDragZoomDisabled())
         binding.pdfView.setLongPressDragEnabled(pref.getLongPressDragEnabled())
+        binding.pdfView.setCrossPageTextSelection(pref.getCrossPageTextSelection())
         fullScreenButtonController.configure()
         if (doc.hasFile()) {
             shortcutBarController.configure()

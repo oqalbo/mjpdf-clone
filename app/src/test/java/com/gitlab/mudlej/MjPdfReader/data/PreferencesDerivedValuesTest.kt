@@ -154,6 +154,19 @@ class PreferencesDerivedValuesTest {
         }
     }
 
+    @Test fun crossPageTextSelectionDefaultsOffAndPersists() {
+        val stored = InMemorySharedPreferences()
+        val preferences = Preferences(stored)
+
+        assertEquals(false, Preferences.crossPageTextSelectionDefault)
+        assertEquals(false, preferences.getCrossPageTextSelection())
+
+        preferences.setCrossPageTextSelection(true)
+
+        assertTrue(preferences.getCrossPageTextSelection())
+        assertEquals(true, stored.snapshot()[Preferences.crossPageTextSelectionKey])
+    }
+
     @Ignore("Pending ruling: an empty stored overlay order returns an empty list, expected the default order")
     @Test fun emptyOverlayActionOrderUsesTheDefaultOrder() {
         val stored = InMemorySharedPreferences(mapOf(Preferences.fullScreenOverlayActionOrderKey to ""))

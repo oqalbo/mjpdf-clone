@@ -16,7 +16,10 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 final class TextSelectionManager {
 
@@ -28,8 +31,19 @@ final class TextSelectionManager {
     private static final float LINE_MERGE_GAP_FACTOR = 0.5f;
     private static final float LOOSE_HEIGHT_LIMIT_FACTOR = 2.5f;
     private static final float FALLBACK_LINE_PAD_FACTOR = 0.15f;
+    private static final String PAGE_BREAK = "\n";
 
     private enum Handle { NONE, START, END }
+
+    private static final class SelectionRun {
+        final int pageIndex;
+        final RectF pdfRect;
+
+        SelectionRun(int pageIndex, RectF pdfRect) {
+            this.pageIndex = pageIndex;
+            this.pdfRect = pdfRect;
+        }
+    }
 
     private final PDFView pdfView;
     private final Paint selectionPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -37,7 +51,8 @@ final class TextSelectionManager {
     private final Path selectionPath = new Path();
     private final Path handlePath = new Path();
     private final float[] boxScratch = new float[4];
-    private final List<RectF> pdfRunRects = new ArrayList<>();
+    private final List<SelectionRun> selectionRuns = new ArrayList<>();
+    private final Set<Integer> openedTextPages = new LinkedHashSet<>();
     private final float handleTouchRadius;
     private final float minHandleRadius;
     private final float maxHandleRadius;
@@ -49,7 +64,6 @@ final class TextSelectionManager {
     private int selectionCharCount;
     private boolean startHandleRtl;
     private boolean endHandleRtl;
-    private int activePage = -1;
     private Handle dragging = Handle.NONE;
     private float dragOffsetX;
     private float dragOffsetY;
@@ -88,6 +102,10 @@ final class TextSelectionManager {
 
     boolean hasSelection() {
         return selection != null && !selection.isEmpty();
+    }
+
+    boolean isSinglePageSelection() {
+        return hasSelection() && selection.isSinglePage();
     }
 
     boolean isDraggingHandle() {
@@ -146,7 +164,7 @@ final class TextSelectionManager {
 
         clear();
         pdfFile.ensureTextPage(page);
-        activePage = page;
+        openedTextPages.add(page);
         if (pdfFile.pageCharCount(page) <= 0) {
             clear();
             return false;
@@ -162,11 +180,12 @@ final class TextSelectionManager {
 
         int[] word = expandWord(page, glyph);
         selection = new TextSelection();
-        selection.pageIndex = page;
-        selection.baseChar = word[0];
-        selection.extentChar = word[1];
+        selection.anchorPage = page;
+        selection.anchorChar = word[0];
+        selection.focusPage = page;
+        selection.focusChar = word[1];
         rebuildRects();
-        if (pdfRunRects.isEmpty()) {
+        if (selectionRuns.isEmpty()) {
             clear();
             return false;
         }
@@ -180,30 +199,56 @@ final class TextSelectionManager {
         if (pdfFile == null || selection == null || selection.isEmpty()) {
             return "";
         }
-        String raw = pdfFile.textRange(selection.pageIndex, selection.startChar(), selection.count());
-        return normalizeCopiedText(raw);
+
+        StringBuilder raw = new StringBuilder();
+        int firstPage = selection.startPage();
+        int lastPage = selection.endPage();
+        for (int page = firstPage; page <= lastPage; page++) {
+            int charCount = pdfFile.pageCharCount(page);
+            if (charCount <= 0) {
+                continue;
+            }
+            int start = page == firstPage ? selection.startChar() : 0;
+            int end = page == lastPage ? selection.endChar() : charCount;
+            start = clamp(start, 0, charCount);
+            end = clamp(end, 0, charCount);
+            if (end <= start) {
+                continue;
+            }
+            String pageText = normalizeCopiedText(pdfFile.textRange(page, start, end - start));
+            if (pageText.isEmpty()) {
+                continue;
+            }
+            if (raw.length() > 0
+                    && raw.charAt(raw.length() - 1) != '\n'
+                    && pageText.charAt(0) != '\n') {
+                raw.append(PAGE_BREAK);
+            }
+            raw.append(pageText);
+        }
+        return normalizeCopiedText(raw.toString());
     }
 
     PDFView.HighlightRequest getHighlightRequest() {
-        if (selection == null || selection.isEmpty() || pdfRunRects.isEmpty()) {
+        if (!isSinglePageSelection() || selectionRuns.isEmpty()) {
             return null;
         }
-        List<RectF> rects = new ArrayList<>(pdfRunRects.size());
-        for (RectF pdfRect : pdfRunRects) {
-            rects.add(new RectF(pdfRect));
+        List<RectF> rects = new ArrayList<>(selectionRuns.size());
+        for (SelectionRun run : selectionRuns) {
+            rects.add(new RectF(run.pdfRect));
         }
-        return new PDFView.HighlightRequest(selection.pageIndex, rects, getSelectedText());
+        return new PDFView.HighlightRequest(selection.startPage(), rects, getSelectedText());
     }
 
     RectF getSelectionViewBounds() {
-        if (selection == null || pdfRunRects.isEmpty() || pdfView.pdfFile == null) {
+        if (selection == null || selectionRuns.isEmpty() || pdfView.pdfFile == null) {
             return null;
         }
 
         RectF union = null;
         float zoom = pdfView.getZoom();
-        for (RectF pdfRect : pdfRunRects) {
-            RectF viewRect = selectionRectInView(pdfView.pdfFile, pdfRect, zoom);
+        for (SelectionRun run : selectionRuns) {
+            RectF viewRect = selectionRectInView(pdfView.pdfFile, run, zoom);
             if (viewRect == null) {
                 continue;
             }
@@ -221,7 +266,9 @@ final class TextSelectionManager {
         if (pdfFile == null || selection == null || selection.isEmpty()) {
             return;
         }
-        PDFView.debugPut(out, "selPage", selection.pageIndex);
+        PDFView.debugPut(out, "selPage", selection.startPage());
+        PDFView.debugPut(out, "selStartPage", selection.startPage());
+        PDFView.debugPut(out, "selEndPage", selection.endPage());
         PDFView.debugPut(out, "selStart", selection.startChar());
         PDFView.debugPut(out, "selEnd", selection.endChar());
         PDFView.debugPut(out, "selCharCount", selectionCharCount);
@@ -234,8 +281,8 @@ final class TextSelectionManager {
     private String debugRunRects(PdfFile pdfFile) {
         StringBuilder rects = new StringBuilder();
         float zoom = pdfView.getZoom();
-        for (RectF pdfRect : pdfRunRects) {
-            RectF viewRect = selectionRectInView(pdfFile, pdfRect, zoom);
+        for (SelectionRun run : selectionRuns) {
+            RectF viewRect = selectionRectInView(pdfFile, run, zoom);
             if (viewRect == null) {
                 continue;
             }
@@ -247,14 +294,14 @@ final class TextSelectionManager {
         return rects.toString();
     }
 
-    private RectF selectionRectInView(PdfFile pdfFile, RectF pdfRect, float zoom) {
+    private RectF selectionRectInView(PdfFile pdfFile, SelectionRun run, float zoom) {
         RectF viewRect = pdfFile.pdfRectToDocument(
-                selection.pageIndex,
+                run.pageIndex,
                 zoom,
-                pdfRect.left,
-                pdfRect.bottom,
-                pdfRect.right,
-                pdfRect.top
+                run.pdfRect.left,
+                run.pdfRect.bottom,
+                run.pdfRect.right,
+                run.pdfRect.top
         );
         if (viewRect != null) {
             viewRect.offset(pdfView.getCurrentXOffset(), pdfView.getCurrentYOffset());
@@ -283,13 +330,15 @@ final class TextSelectionManager {
     void clear() {
         boolean hadSelection = selection != null;
         PdfFile pdfFile = pdfView.pdfFile;
-        if (pdfFile != null && activePage >= 0) {
-            pdfFile.closeTextPage(activePage);
+        if (pdfFile != null) {
+            for (int page : openedTextPages) {
+                pdfFile.closeTextPage(page);
+            }
         }
-        activePage = -1;
+        openedTextPages.clear();
         selection = null;
         dragging = Handle.NONE;
-        pdfRunRects.clear();
+        selectionRuns.clear();
         selectionCharCount = 0;
         startHandleRtl = false;
         endHandleRtl = false;
@@ -304,9 +353,9 @@ final class TextSelectionManager {
     void recycle() {
         boolean hadSelection = selection != null;
         selection = null;
-        activePage = -1;
         dragging = Handle.NONE;
-        pdfRunRects.clear();
+        selectionRuns.clear();
+        openedTextPages.clear();
         selectionCharCount = 0;
         startHandleRtl = false;
         endHandleRtl = false;
@@ -320,21 +369,21 @@ final class TextSelectionManager {
     }
 
     void draw(Canvas canvas) {
-        if (selection == null || pdfRunRects.isEmpty() || pdfView.pdfFile == null) {
+        if (selection == null || selectionRuns.isEmpty() || pdfView.pdfFile == null) {
             return;
         }
 
         float zoom = pdfView.getZoom();
         selectionPath.rewind();
         boolean hasRect = false;
-        for (RectF pdfRect : pdfRunRects) {
+        for (SelectionRun run : selectionRuns) {
             RectF docRect = pdfView.pdfFile.pdfRectToDocument(
-                    selection.pageIndex,
+                    run.pageIndex,
                     zoom,
-                    pdfRect.left,
-                    pdfRect.bottom,
-                    pdfRect.right,
-                    pdfRect.top
+                    run.pdfRect.left,
+                    run.pdfRect.bottom,
+                    run.pdfRect.right,
+                    run.pdfRect.top
             );
             if (docRect != null) {
                 selectionPath.addRect(docRect, Path.Direction.CW);
@@ -426,14 +475,20 @@ final class TextSelectionManager {
             dragOffsetX = 0f;
             dragOffsetY = 0f;
         }
-        int start = selection.startChar();
-        int end = selection.endChar();
+        int startPage = selection.startPage();
+        int startChar = selection.startChar();
+        int endPage = selection.endPage();
+        int endChar = selection.endChar();
         if (handle == Handle.START) {
-            selection.baseChar = end;
-            selection.extentChar = start;
+            selection.anchorPage = endPage;
+            selection.anchorChar = endChar;
+            selection.focusPage = startPage;
+            selection.focusChar = startChar;
         } else {
-            selection.baseChar = start;
-            selection.extentChar = end;
+            selection.anchorPage = startPage;
+            selection.anchorChar = startChar;
+            selection.focusPage = endPage;
+            selection.focusChar = endChar;
         }
         if (anchor != null) {
             showMagnifier(anchor.x, anchor.y);
@@ -453,33 +508,78 @@ final class TextSelectionManager {
         showMagnifier(lookupX, lookupY);
         float docX = -pdfView.getCurrentXOffset() + lookupX;
         float docY = -pdfView.getCurrentYOffset() + lookupY;
-        PointF point = pdfFile.documentToPdf(selection.pageIndex, pdfView.getZoom(), docX, docY);
-        float tolerance = viewDistanceToPdf(selection.pageIndex, handleHitTolerancePx);
-        int caret = caretAt(selection.pageIndex, point.x, point.y, tolerance);
-        if (caret < 0) {
+
+        int page;
+        if (pdfView.isCrossPageTextSelection()) {
+            page = pdfFile.getPageAtOffset(pdfView.isSwipeVertical() ? docY : docX,
+                    pdfView.isSwipeVertical() ? docX : docY, pdfView.getZoom());
+        } else {
+            page = selection.anchorPage;
+        }
+        if (page < 0 || page >= pdfFile.getPagesCount()) {
             return;
         }
 
-        int charCount = pdfFile.pageCharCount(selection.pageIndex);
-        caret = clamp(caret, 0, charCount);
+        pdfFile.ensureTextPage(page);
+        openedTextPages.add(page);
+        int charCount = pdfFile.pageCharCount(page);
+        int caret = -1;
         if (charCount > 0) {
-            if (dragging == Handle.START && caret >= selection.baseChar) {
-                caret = selection.baseChar > 0 ? selection.baseChar - 1 : selection.baseChar + 1;
-            } else if (dragging == Handle.END && caret <= selection.baseChar) {
-                caret = selection.baseChar < charCount ? selection.baseChar + 1 : selection.baseChar - 1;
-            }
-            caret = clamp(caret, 0, charCount);
+            PointF point = pdfFile.documentToPdf(page, pdfView.getZoom(), docX, docY);
+            float tolerance = viewDistanceToPdf(page, handleHitTolerancePx);
+            caret = caretAt(page, point.x, point.y, tolerance);
         }
 
-        if (caret == selection.extentChar && !pdfRunRects.isEmpty()) {
+        int basePage = selection.anchorPage;
+        int baseChar = selection.anchorChar;
+        boolean samePage = page == basePage;
+        if (caret < 0) {
+            if (pdfView.isCrossPageTextSelection() && !samePage) {
+                caret = dragging == Handle.START ? charCount : 0;
+            } else {
+                return;
+            }
+        }
+
+        if (dragging == Handle.END) {
+            if (page < basePage) {
+                page = basePage;
+                caret = baseChar + 1;
+            } else if (samePage && caret <= baseChar) {
+                caret = baseChar + 1;
+            }
+        } else {
+            if (page > basePage) {
+                page = basePage;
+                caret = baseChar - 1;
+            } else if (samePage && caret >= baseChar) {
+                caret = baseChar - 1;
+            }
+        }
+
+        int finalCharCount = pdfFile.pageCharCount(page);
+        caret = clamp(caret, 0, finalCharCount);
+        if (page == basePage) {
+            if (dragging == Handle.START && caret >= baseChar) {
+                caret = baseChar > 0 ? baseChar - 1 : baseChar + 1;
+            } else if (dragging == Handle.END && caret <= baseChar) {
+                caret = baseChar < finalCharCount ? baseChar + 1 : baseChar - 1;
+            }
+            caret = clamp(caret, 0, finalCharCount);
+        }
+
+        if (page == selection.focusPage && caret == selection.focusChar) {
             return;
         }
 
-        int previousExtent = selection.extentChar;
-        selection.extentChar = caret;
+        int previousPage = selection.focusPage;
+        int previousChar = selection.focusChar;
+        selection.focusPage = page;
+        selection.focusChar = caret;
         rebuildRects();
-        if (pdfRunRects.isEmpty()) {
-            selection.extentChar = previousExtent;
+        if (selectionRuns.isEmpty()) {
+            selection.focusPage = previousPage;
+            selection.focusChar = previousChar;
             rebuildRects();
         } else {
             notifyChanged();
@@ -493,7 +593,7 @@ final class TextSelectionManager {
         }
         pdfView.callbacks.callOnTextSelectionChanged(
                 getSelectionViewBounds(),
-                selection.pageIndex
+                selection.startPage()
         );
         pdfView.publishDebugState();
     }
@@ -592,7 +692,7 @@ final class TextSelectionManager {
     }
 
     private boolean isHandleEndpointRtl(Handle handle) {
-        if (selection == null || selectionCharCount <= 0) {
+        if (selection == null) {
             return false;
         }
         return handle == Handle.START ? startHandleRtl : endHandleRtl;
@@ -600,17 +700,19 @@ final class TextSelectionManager {
 
     private RectF handleRunDocumentRect(Handle handle, float zoom) {
         PdfFile pdfFile = pdfView.pdfFile;
-        if (pdfFile == null || selection == null || pdfRunRects.isEmpty()) {
+        if (pdfFile == null || selectionRuns.isEmpty()) {
             return null;
         }
-        RectF pdfRect = handle == Handle.START ? pdfRunRects.get(0) : pdfRunRects.get(pdfRunRects.size() - 1);
+        SelectionRun run = handle == Handle.START
+                ? selectionRuns.get(0)
+                : selectionRuns.get(selectionRuns.size() - 1);
         return pdfFile.pdfRectToDocument(
-                selection.pageIndex,
+                run.pageIndex,
                 zoom,
-                pdfRect.left,
-                pdfRect.bottom,
-                pdfRect.right,
-                pdfRect.top
+                run.pdfRect.left,
+                run.pdfRect.bottom,
+                run.pdfRect.right,
+                run.pdfRect.top
         );
     }
 
@@ -619,8 +721,8 @@ final class TextSelectionManager {
         if (pdfFile == null || selection == null) {
             return false;
         }
-        for (RectF pdfRect : pdfRunRects) {
-            RectF viewRect = selectionRectInView(pdfFile, pdfRect, pdfView.getZoom());
+        for (SelectionRun run : selectionRuns) {
+            RectF viewRect = selectionRectInView(pdfFile, run, pdfView.getZoom());
             if (viewRect == null) {
                 continue;
             }
@@ -664,7 +766,7 @@ final class TextSelectionManager {
     }
 
     private void rebuildRects() {
-        pdfRunRects.clear();
+        selectionRuns.clear();
         selectionCharCount = 0;
         startHandleRtl = false;
         endHandleRtl = false;
@@ -673,19 +775,62 @@ final class TextSelectionManager {
             return;
         }
 
-        int page = selection.pageIndex;
-        int charCount = pdfFile.pageCharCount(page);
-        selectionCharCount = charCount;
-        int start = Math.max(0, Math.min(selection.startChar(), charCount));
-        int end = Math.max(start, Math.min(selection.endChar(), charCount));
-        if (end <= start) {
+        int firstPage = selection.startPage();
+        int lastPage = selection.endPage();
+        if (firstPage < 0 || lastPage < firstPage || lastPage >= pdfFile.getPagesCount()) {
             return;
         }
+        syncTextPages(firstPage, lastPage);
 
-        startHandleRtl = TextDirectionUtil.isRtl(pdfFile.charUnicode(page, clamp(selection.startChar(), 0, charCount - 1)));
-        endHandleRtl = TextDirectionUtil.isRtl(pdfFile.charUnicode(page, clamp(selection.endChar() - 1, 0, charCount - 1)));
+        for (int page = firstPage; page <= lastPage; page++) {
+            int charCount = pdfFile.pageCharCount(page);
+            if (charCount <= 0) {
+                continue;
+            }
+            int start = page == firstPage ? selection.startChar() : 0;
+            int end = page == lastPage ? selection.endChar() : charCount;
+            start = clamp(start, 0, charCount);
+            end = clamp(end, 0, charCount);
+            if (end <= start) {
+                continue;
+            }
+            selectionCharCount += end - start;
+            addPageRuns(pdfFile, page, start, end);
+        }
 
+        if (selectionRuns.isEmpty()) {
+            return;
+        }
+        startHandleRtl = isRtlAt(pdfFile, firstPage, selection.startChar());
+        endHandleRtl = isRtlAt(pdfFile, lastPage, selection.endChar() - 1);
+    }
+
+    private void syncTextPages(int firstPage, int lastPage) {
+        PdfFile pdfFile = pdfView.pdfFile;
+        if (pdfFile == null) {
+            return;
+        }
+        for (int page = firstPage; page <= lastPage; page++) {
+            pdfFile.ensureTextPage(page);
+            openedTextPages.add(page);
+        }
+
+        Iterator<Integer> iterator = openedTextPages.iterator();
+        while (iterator.hasNext()) {
+            int page = iterator.next();
+            if (page < firstPage || page > lastPage) {
+                pdfFile.closeTextPage(page);
+                iterator.remove();
+            }
+        }
+    }
+
+    private void addPageRuns(PdfFile pdfFile, final int page, int start, int end) {
         float[] values = pdfFile.textRects(page, start, end - start);
+        if (values.length == 0) {
+            return;
+        }
+        List<RectF> pageRects = new ArrayList<>();
         groupLines(values, new LooseGlyphLookup() {
             @Override
             public int charIndexAtPoint(float x, float y, float tolerance) {
@@ -696,7 +841,19 @@ final class TextSelectionManager {
             public boolean looseCharBox(int glyph, float[] out) {
                 return pdfFile.looseCharBox(page, glyph, out);
             }
-        }, boxScratch, pdfRunRects);
+        }, boxScratch, pageRects);
+        for (RectF rect : pageRects) {
+            selectionRuns.add(new SelectionRun(page, rect));
+        }
+    }
+
+    private boolean isRtlAt(PdfFile pdfFile, int page, int charIndex) {
+        int charCount = pdfFile.pageCharCount(page);
+        if (charCount <= 0) {
+            return false;
+        }
+        return TextDirectionUtil.isRtl(
+                pdfFile.charUnicode(page, clamp(charIndex, 0, charCount - 1)));
     }
 
     interface LooseGlyphLookup {

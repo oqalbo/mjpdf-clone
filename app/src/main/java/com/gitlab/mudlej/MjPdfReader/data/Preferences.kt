@@ -132,6 +132,7 @@ class Preferences(private val prefMan: SharedPreferences) {
         const val partSizeKey = "partSize"
         const val maxZoomKey = "maxZoom"
         const val inlineTextSelectionKey = "inlineTextSelection"
+        const val crossPageTextSelectionKey = "crossPageTextSelection"
         const val detectExistingHighlightsKey = "detectExistingHighlights"
         const val highlightColorsKey = "highlightColors"
         const val searchIgnoreAccentsKey = "searchIgnoreAccents"
@@ -238,6 +239,7 @@ class Preferences(private val prefMan: SharedPreferences) {
         const val autoBackupHourDefault = 2
         const val autoBackupMinuteDefault = 0
         const val inlineTextSelectionDefault = true
+        const val crossPageTextSelectionDefault = false
         const val detectExistingHighlightsDefault = true
         const val searchIgnoreAccentsDefault = false
         const val searchZoomToResultDefault = false
@@ -318,7 +320,7 @@ class Preferences(private val prefMan: SharedPreferences) {
                 horizontalScrollKey, dualPageModeKey, dualPageFirstPageAloneKey, pageSnapKey,
                 pageFlingKey, browserScrollModeKey, singlePageModeKey, turnPageByMouseButtonsKey, pdfDarkThemeKey,
                 appFollowSystemThemeKey, pdfFollowSystemThemeKey, enableReloadButtonKey, screenOnKey,
-                spaceBetweenPagesKey, inlineTextSelectionKey, detectExistingHighlightsKey,
+                spaceBetweenPagesKey, inlineTextSelectionKey, crossPageTextSelectionKey, detectExistingHighlightsKey,
                 searchIgnoreAccentsKey, searchZoomToResultKey, defaultTextModeKey,
                 turnPageByVolumeButtonsKey, showScrollHandlePageCountKey, showAppBarPageCountKey,
                 alwaysHideMarginsKey, secondBarEnabledKey, hideButtonsLabelsKey,
@@ -452,6 +454,7 @@ class Preferences(private val prefMan: SharedPreferences) {
     fun getDictionaryDefineWords() = safeGetBoolean(dictionaryDefineWordsKey, dictionaryDefineWordsDefault)
     fun getMaxZoom() = safeGetFloat(maxZoomKey, maxZoomDefault)
     fun getInlineTextSelection() = safeGetBoolean(inlineTextSelectionKey, inlineTextSelectionDefault)
+    fun getCrossPageTextSelection() = safeGetBoolean(crossPageTextSelectionKey, crossPageTextSelectionDefault)
     fun getDetectExistingHighlights() = safeGetBoolean(detectExistingHighlightsKey, detectExistingHighlightsDefault)
     fun getHighlightColors(): List<Int> {
         val stored = safeGetString(highlightColorsKey, null)
@@ -624,6 +627,7 @@ class Preferences(private val prefMan: SharedPreferences) {
 
     fun setMaxZoom(value: Float) = prefMan.edit().putFloat(maxZoomKey, value).apply()
     fun setInlineTextSelection(value: Boolean) = prefMan.edit().putBoolean(inlineTextSelectionKey, value).apply()
+    fun setCrossPageTextSelection(value: Boolean) = prefMan.edit().putBoolean(crossPageTextSelectionKey, value).apply()
     fun setDetectExistingHighlights(value: Boolean) = prefMan.edit().putBoolean(detectExistingHighlightsKey, value).apply()
     fun setHighlightColors(value: List<HighlightPalette>) = prefMan.edit()
         .putString(highlightColorsKey, value.joinToString(",") { it.name })

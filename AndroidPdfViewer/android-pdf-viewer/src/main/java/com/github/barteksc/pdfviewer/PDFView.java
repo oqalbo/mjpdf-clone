@@ -763,6 +763,8 @@ public class PDFView extends RelativeLayout {
 
     private boolean longPressDragEnabled = false;
 
+    private boolean crossPageTextSelection = false;
+
     private boolean nightMode = false;
 
     private boolean pageSnap = true;
@@ -1091,6 +1093,14 @@ public class PDFView extends RelativeLayout {
 
     boolean isLongPressDragEnabled() {
         return longPressDragEnabled;
+    }
+
+    public void setCrossPageTextSelection(boolean enabled) {
+        this.crossPageTextSelection = enabled;
+    }
+
+    boolean isCrossPageTextSelection() {
+        return crossPageTextSelection;
     }
 
     boolean isQuickScaleEnabled() {
@@ -2309,6 +2319,10 @@ public class PDFView extends RelativeLayout {
 
     public boolean hasTextSelection() {
         return textSelectionManager != null && textSelectionManager.hasSelection();
+    }
+
+    public boolean isTextSelectionSinglePage() {
+        return textSelectionManager != null && textSelectionManager.isSinglePageSelection();
     }
 
     public String getSelectedText() {
@@ -3810,6 +3824,8 @@ public class PDFView extends RelativeLayout {
 
         private boolean longPressDragEnabled = false;
 
+        private boolean crossPageTextSelection = false;
+
         private OnDrawListener onDrawListener;
 
         private OnDrawListener onDrawAllListener;
@@ -3927,6 +3943,11 @@ public class PDFView extends RelativeLayout {
 
         public Configurator longPressDragEnabled(boolean longPressDragEnabled) {
             this.longPressDragEnabled = longPressDragEnabled;
+            return this;
+        }
+
+        public Configurator crossPageTextSelection(boolean crossPageTextSelection) {
+            this.crossPageTextSelection = crossPageTextSelection;
             return this;
         }
 
@@ -4170,6 +4191,7 @@ public class PDFView extends RelativeLayout {
             PDFView.this.enableDoubleTap(enableDoubleTap);
             PDFView.this.setQuickScaleEnabled(quickScaleEnabled);
             PDFView.this.setLongPressDragEnabled(longPressDragEnabled);
+            PDFView.this.setCrossPageTextSelection(crossPageTextSelection);
             PDFView.this.setDefaultPage(defaultPage);
             PDFView.this.setDefaultViewState(defaultViewState);
             PDFView.this.setSwipeVertical(!swipeHorizontal);

@@ -362,6 +362,14 @@ internal class SettingsEntryProvider(private val preferences: Preferences) {
             ),
             switchEntry(
                 page = SettingsPage.TEXT,
+                titleRes = R.string.cross_page_text_selection_title,
+                key = Preferences.crossPageTextSelectionKey,
+                defaultValue = Preferences.crossPageTextSelectionDefault,
+                summaryRes = R.string.cross_page_text_selection_summary,
+                keywords = listOf("selection", "select", "text", "page", "pages", "cross page", "copy"),
+            ),
+            switchEntry(
+                page = SettingsPage.TEXT,
                 titleRes = R.string.search_ignore_accents_title,
                 key = Preferences.searchIgnoreAccentsKey,
                 defaultValue = Preferences.searchIgnoreAccentsDefault,

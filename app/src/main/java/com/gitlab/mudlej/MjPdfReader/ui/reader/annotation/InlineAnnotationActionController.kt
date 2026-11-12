@@ -144,11 +144,13 @@ class InlineAnnotationActionController(
 
         activeHighlightAnnotation = null
         binding.pdfView.clearSelectedHighlightAnnotation()
+        val canAnnotateSelection = binding.pdfView.isTextSelectionSinglePage
         binding.textSelectionCopyButton.visibility = View.VISIBLE
         binding.textSelectionShareButton.visibility = View.VISIBLE
         binding.textSelectionSearchWebButton.visibility = View.VISIBLE
-        binding.textSelectionNoteButton.visibility = View.VISIBLE
+        binding.textSelectionNoteButton.visibility = if (canAnnotateSelection) View.VISIBLE else View.GONE
         binding.textSelectionTranslateButton.visibility = View.VISIBLE
+        binding.textSelectionSwatchFlow.visibility = if (canAnnotateSelection) View.VISIBLE else View.GONE
         binding.textSelectionDeleteHighlightButton.visibility = View.GONE
         binding.textSelectionDiscardButton.visibility = View.VISIBLE
         applyNoteButtonState(hasNote = false)
@@ -188,6 +190,7 @@ class InlineAnnotationActionController(
         binding.textSelectionSearchWebButton.visibility = textActionVisibility
         binding.textSelectionTranslateButton.visibility = textActionVisibility
         binding.textSelectionNoteButton.visibility = View.VISIBLE
+        binding.textSelectionSwatchFlow.visibility = View.VISIBLE
         binding.textSelectionDeleteHighlightButton.visibility = View.VISIBLE
         binding.textSelectionDiscardButton.visibility = View.GONE
         applyNoteButtonState(hasNote = annotation.note.isNotBlank())

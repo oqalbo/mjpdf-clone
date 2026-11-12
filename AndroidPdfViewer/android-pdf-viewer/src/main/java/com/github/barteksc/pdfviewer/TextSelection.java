@@ -2,23 +2,37 @@ package com.github.barteksc.pdfviewer;
 
 final class TextSelection {
 
-    int pageIndex;
-    int baseChar;
-    int extentChar;
+    int anchorPage;
+    int anchorChar;
+    int focusPage;
+    int focusChar;
 
     boolean isEmpty() {
-        return baseChar == extentChar;
+        return anchorPage == focusPage && anchorChar == focusChar;
+    }
+
+    boolean isSinglePage() {
+        return startPage() == endPage();
+    }
+
+    int startPage() {
+        return isReversed() ? focusPage : anchorPage;
     }
 
     int startChar() {
-        return Math.min(baseChar, extentChar);
+        return isReversed() ? focusChar : anchorChar;
+    }
+
+    int endPage() {
+        return isReversed() ? anchorPage : focusPage;
     }
 
     int endChar() {
-        return Math.max(baseChar, extentChar);
+        return isReversed() ? anchorChar : focusChar;
     }
 
-    int count() {
-        return endChar() - startChar();
+    private boolean isReversed() {
+        return focusPage < anchorPage
+                || (focusPage == anchorPage && focusChar < anchorChar);
     }
 }
